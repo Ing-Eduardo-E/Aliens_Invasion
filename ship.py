@@ -15,16 +15,23 @@ class Ship:
         # coloca inicialmente cada nave nueva en el centro de la parte inferior de la pantalla
         self.rect.midbottom = self.screen_rect.midbottom
 
+        # Guarda un valor decimal para la posición horizontal de la nave.
+        self.x = float(self.rect.x)
+
         # Bandera de movimiento
         self.moving_right = False
         self.moving_left = False
 
     def update(self):
         """Actualiza la posición de la nave en funcion de la bandera de movimiento"""
+        # Actualiza el valor x en la nave, no el rect.
         if self.moving_right:
-            self.rect.x +=1
+            self.rect.x += self.settings.ship_speed
         if self.moving_left:
-            self.rect.x -= 1
+            self.rect.x -= self.settings.ship_speed
+
+        # Actualiza el objeto rect de self x.
+        self.rect.x = self.x
 
     def blitme(self):
         """dibuja la nave en su ubicación actual"""
