@@ -28,14 +28,7 @@ class AlienInvasion:
         while True:
             self._check_events()
             self.ship.update()
-            self.bullets.update()
-
-            # Se deshace de las balas que han desaparecido.
-            for bullet in self.bullets.copy():
-                if bullet.rect.bottom <= 0:
-                    self.bullets.remove(bullet)
-            # print(len(self.bullets)) Esto fue para ver que realmente las balas se borran
-
+            self._update_bullets()
             self._update_screen()
 
     def _check_events(self):
@@ -71,6 +64,16 @@ class AlienInvasion:
         if len(self.bullets) < self.settings.bullets_allowed:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
+
+    def _update_bullets(self):
+        """Actualiza la posición de las balas y se deshace de las viejas."""
+        # Actualiza las posiciones de las balas.
+        self.bullets.update()
+        # Se deshace de las balas que han desaparecido.
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
+        # print(len(self.bullets)) Esto fue para ver que realmente las balas se borran
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
