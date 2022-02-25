@@ -8,12 +8,13 @@ class Settings:
         self.screen_height = 800
         self.bg_color = (230, 230, 230)
 
-        # Ship settings
+        # Configuraciones de estadísticas.
         self.ship_speed = 1.5
+        self.ship_limit = 3
 
         # Configuración de balas.
         self.bullet_speed = 1.5
-        self.bullet_width = 3
+        self.bullet_width = 5
         self.bullet_height = 15
         self.bullet_color = (60, 60, 60)
         self.bullets_allowed = 3 # limite de balas en el juego

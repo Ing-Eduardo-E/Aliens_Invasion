@@ -1,8 +1,10 @@
 import sys
+from time import sleep
 
 import pygame
 
 from settings import Settings
+from game_stats import GameStats
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
@@ -19,6 +21,9 @@ class AlienInvasion:
         self.settings.screen_width = self.screen.get_rect().width
         self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Alien Invasion")
+
+        # Crea una instancia para guardar las estadísticas del juego.
+        self.stats = GameStats()
 
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
@@ -78,8 +83,11 @@ class AlienInvasion:
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
         # print(len(self.bullets)) Esto fue para ver que realmente las balas se borran
-        # Busca balas que hayan dado a algún aliens.
-        # Si hay, se deshace de la bala y del alien.
+        self._check_bullet_alien_collisions()
+
+    def _check_bullet_alien_collisions(self):
+        """Responde a las colisiones bala - alien."""
+        # Retira todas las balas y aliens que hayan chocado.
         collisions = pygame.sprite.groupcollide(
             self.bullets, self.aliens, True, True
         )
@@ -88,6 +96,23 @@ class AlienInvasion:
             self.bullets.empty()
             self._create_fleet()
 
+    def _ship_hit(self):
+        """Responde al impacto de un alien en la nave"""
+
+        # Disminuye ships_left.
+        self.stats.ships_left -= 1
+        
+        # Se deshace de los aliens y balas restantes.
+        self.aliens.empty()
+        self.bullets.empty()
+
+        # Crea una flota nueva y centra la nave.
+        self._create_fleet()
+        self.ship.center_ship()
+
+        # pausa
+        sleep(0.5)
+
     def _update_aliens(self):
         """
         Comprueba si la flota esta en un borde,
@@ -95,6 +120,10 @@ class AlienInvasion:
         """
         self._check_fleet_edges()
         self.aliens.update()
+
+        # Busca colisiones alien-nave
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            print("Ship hit!!!")
 
     def _create_fleet(self):
         """Creación de la flota de aliens."""
