@@ -32,6 +32,7 @@ class AlienInvasion:
             self._check_events()
             self.ship.update()
             self._update_bullets()
+            self._update_aliens()
             self._update_screen()
 
     def _check_events(self):
@@ -77,6 +78,10 @@ class AlienInvasion:
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
         # print(len(self.bullets)) Esto fue para ver que realmente las balas se borran
+
+    def _update_aliens(self):
+        """Actualiza las posiciones de todos los aliens de la flota"""  
+        self.aliens.update()
 
     def _create_fleet(self):
         """Creación de la flota de aliens."""
