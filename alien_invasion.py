@@ -80,7 +80,11 @@ class AlienInvasion:
         # print(len(self.bullets)) Esto fue para ver que realmente las balas se borran
 
     def _update_aliens(self):
-        """Actualiza las posiciones de todos los aliens de la flota"""  
+        """
+        Comprueba si la flota esta en un borde,
+        después actualiza las posiciones de todos los aliens de la flota.
+        """
+        self._check_fleet_edges()
         self.aliens.update()
 
     def _create_fleet(self):
@@ -110,6 +114,19 @@ class AlienInvasion:
         alien.rect.x = alien.x
         alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
         self.aliens.add(alien)
+
+    def _check_fleet_edges(self):
+        """Responde adecuadamente si algún alien ha llegado a un borde"""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+    
+    def _change_fleet_direction(self):
+        """Baja toda la flota y cambia de dirección."""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
