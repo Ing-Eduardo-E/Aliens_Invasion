@@ -5,6 +5,7 @@ import pygame
 
 from settings import Settings
 from game_stats import GameStats
+from button import Button
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
@@ -30,14 +31,19 @@ class AlienInvasion:
         self.aliens = pygame.sprite.Group()
         self._create_fleet()
 
+        # Hace el botón play.
+        self.play_button = Button(self, "Play")
+
 
     def run_game(self):
         """Inicial el bucle principal de juego."""
         while True:
             self._check_events()
-            self.ship.update()
-            self._update_bullets()
-            self._update_aliens()
+            if self.stats.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self._update_aliens()
+            
             self._update_screen()
 
     def _check_events(self):
@@ -98,20 +104,19 @@ class AlienInvasion:
 
     def _ship_hit(self):
         """Responde al impacto de un alien en la nave"""
-
-        # Disminuye ships_left.
-        self.stats.ships_left -= 1
-        
-        # Se deshace de los aliens y balas restantes.
-        self.aliens.empty()
-        self.bullets.empty()
-
-        # Crea una flota nueva y centra la nave.
-        self._create_fleet()
-        self.ship.center_ship()
-
-        # pausa
-        sleep(0.5)
+        if self.stats.ships_left > 0:
+            # Disminuye ships_left.
+            self.stats.ships_left -= 1
+            # Se deshace de los aliens y balas restantes.
+            self.aliens.empty()
+            self.bullets.empty()
+            # Crea una flota nueva y centra la nave.
+            self._create_fleet()
+            self.ship.center_ship()
+            # pausa
+            sleep(0.5)
+        else:
+            self.stats.game_active = False
 
     def _update_aliens(self):
         """
@@ -185,6 +190,10 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
+
+        # Dibuja el botón para jugar si el juego esta inactivo.
+        if not self.stats.game_active:
+            self.play_button.draw_buttom()
 
         pygame.display.flip()
 
