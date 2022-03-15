@@ -70,6 +70,8 @@ class AlienInvasion:
             self.settings.initialize_dynamic_settings()
             self.stats.reset_stats()
             self.stats.game_active = True
+            self.sb.prep_score()
+            self.sb.prep_level()
 
             # Se deshace de los aliens y las balas que quedan.
             self.aliens.empty()
@@ -123,11 +125,20 @@ class AlienInvasion:
         collisions = pygame.sprite.groupcollide(
             self.bullets, self.aliens, True, True)
         
+        if collisions:
+            for aliens in collisions.values():
+                self.stats.score += self.settings.alien_points
+            self.sb.prep_score()
+            self.sb.check_high_score()
+        
         if not self.aliens:
             # Destruye las balas existentes y crea una nueva flota.
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
+
+            # Aumenta el nivel.
+            self.stats.level += 10self.sb.prep_level()
       
     def _update_aliens(self):
         """
