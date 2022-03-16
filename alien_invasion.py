@@ -72,6 +72,7 @@ class AlienInvasion:
             self.stats.game_active = True
             self.sb.prep_score()
             self.sb.prep_level()
+            self.sb.prep_ships()
 
             # Se deshace de los aliens y las balas que quedan.
             self.aliens.empty()
@@ -127,7 +128,7 @@ class AlienInvasion:
         
         if collisions:
             for aliens in collisions.values():
-                self.stats.score += self.settings.alien_points
+                self.stats.score += self.settings.alien_points * len(aliens)
             self.sb.prep_score()
             self.sb.check_high_score()
         
@@ -138,7 +139,8 @@ class AlienInvasion:
             self.settings.increase_speed()
 
             # Aumenta el nivel.
-            self.stats.level += 10self.sb.prep_level()
+            self.stats.level += 1
+            self.sb.prep_level()
       
     def _update_aliens(self):
         """
@@ -167,8 +169,9 @@ class AlienInvasion:
     def _ship_hit(self):
         """Responde al impacto de un alien en la nave"""
         if self.stats.ships_left > 0:
-            # Disminuye ships_left.
+            # Disminuye ships_left y actualiza el marcador.
             self.stats.ships_left -= 1
+            self.sb.prep_ships()
             # Se deshace de los aliens y balas restantes.
             self.aliens.empty()
             self.bullets.empty()
